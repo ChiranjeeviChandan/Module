@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module QA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="currentColor" opacity=".55"/><path d="M13 4h5.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z" fill="currentColor"/><path d="m14.8 12.2 1.6 1.6 3-3.2" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span>
+        <strong>Module QA</strong>
+        <small>JEE · NEET academic review</small>
+      </span>
+    </a>
+    <nav class="nav" id="nav" hidden>
+      <a href="#new" data-nav="workspace">New module</a>
+      <a href="#modules" data-nav="modules">My modules</a>
+      <a href="#admin" data-nav="admin" id="nav-admin" hidden>Admin</a>
+    </nav>
+    <div class="usermenu" id="usermenu" hidden>
+      <button class="ghost me" id="me-btn" aria-haspopup="true">
+        <span class="avatar" id="me-avatar"></span>
+        <span class="me-text"><b id="me-name"></b><small id="me-role"></small></span>
+      </button>
+      <div class="menu" id="me-menu" hidden>
+        <div class="menu-head" id="me-email"></div>
+        <button id="me-password">Change password</button>
+        <button id="me-logout">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="key-warning" class="banner" hidden>
+    The server has no <code>ANTHROPIC_API_KEY</code>. You can upload, but analysis will not run until the server is restarted with a key.
+  </div>
+
+  <!-- ================= Sign in ================= -->
+  <section class="auth" id="view-auth" hidden>
+    <form class="auth-card" id="login-form">
+      <span class="mark big-mark" aria-hidden="true">QA</span>
+      <h1 id="auth-title">Sign in</h1>
+      <p class="sub" id="auth-sub">Use the account your administrator created for you.</p>
+      <label class="field" id="f-name-wrap" hidden>Name<input id="f-name" autocomplete="name" /></label>
+      <label class="field">Email<input id="f-email" type="email" autocomplete="username" required /></label>
+      <label class="field">Password<input id="f-password" type="password" autocomplete="current-password" required minlength="8" /></label>
+      <p class="form-error" id="auth-error" hidden></p>
+      <button class="primary wide" id="auth-submit">Sign in</button>
+      <p class="hint" id="auth-hint"></p>
+    </form>
+  </section>
+
+  <!-- ================= Workspace ================= -->
+  <div id="view-workspace" hidden>
+  <ol class="track" id="stepper">
+    <li data-step="upload"><i>1</i><span>Upload</span></li>
+    <li data-step="configure"><i>2</i><span>Configure</span></li>
+    <li data-step="analyse"><i>3</i><span>Analyse</span></li>
+    <li data-step="review"><i>4</i><span>Review errors</span></li>
+    <li data-step="implement"><i>5</i><span>Implement</span></li>
+    <li data-step="final"><i>6</i><span>Download</span></li>
+  </ol>
+
+  <main>
+    <!-- Upload + configure -->
+    <section class="card setup" id="setup">
+      <div class="summary" id="summary" hidden>
+        <span class="sum-file" aria-hidden="true">PDF</span>
+        <div class="sum-text">
+          <strong id="sum-name"></strong>
+          <span id="sum-meta"></span>
+        </div>
+        <button class="ghost" id="sum-edit">Edit setup</button>
+      </div>
+      <div class="setup-grid" id="setup-grid">
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="application/pdf" hidden />
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="44" height="44"><path d="M12 6h17l9 9v25a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M29 6v9h9" fill="none" stroke="currentColor" stroke-width="2.2"/><text x="24" y="33" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor" font-family="Inter, sans-serif">PDF</text></svg>
+          </span>
+          <strong id="drop-title">Drop your module here</strong>
+          <span id="drop-sub">or click to browse · PDF up to 200 MB</span>
+        </label>
+
+        <div class="config">
+          <fieldset>
+            <legend>Exam</legend>
+            <div class="choices exams" id="exam">
+              <label><input type="radio" name="exam" value="JEE Main" /><span><b>JEE Main</b><small>NTA · PCM</small></span></label>
+              <label><input type="radio" name="exam" value="JEE Advanced" /><span><b>JEE Advanced</b><small>IIT entrance · PCM</small></span></label>
+              <label><input type="radio" name="exam" value="NEET-UG" /><span><b>NEET-UG</b><small>NTA · PCB</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Class / learner</legend>
+            <div class="choices chips" id="learner">
+              <label><input type="radio" name="learner" value="Class 11" /><span>Class 11</span></label>
+              <label><input type="radio" name="learner" value="Class 12" /><span>Class 12</span></label>
+              <label><input type="radio" name="learner" value="Class 11 + 12 (integrated)" /><span>11 + 12</span></label>
+              <label><input type="radio" name="learner" value="Dropper / repeater" /><span>Dropper</span></label>
+              <label><input type="radio" name="learner" value="Foundation (Class 9–10)" /><span>Foundation 9–10</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Subject</legend>
+            <div class="choices chips" id="subject"><span class="placeholder">Choose an exam first</span></div>
+          </fieldset>
+          <button id="analyse" class="primary wide" disabled>
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Analyse module
+          </button>
+          <p class="hint" id="setup-hint"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section class="card" id="progress" hidden>
+      <div class="card-head">
+        <div>
+          <h2 id="progress-title">Multi-agent review</h2>
+          <p class="sub" id="progress-status"></p>
+        </div>
+        <span class="pct" id="progress-pct">0%</span>
+      </div>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <div class="agents" id="agents">
+        <div class="agent" data-agent="Subject expert"><i></i><b>Subject expert</b><small>Theory, formulas, facts</small></div>
+        <div class="agent" data-agent="Independent solver"><i></i><b>Independent solver</b><small>Questions &amp; answer keys</small></div>
+        <div class="agent" data-agent="Copy editor"><i></i><b>Copy editor</b><small>Language &amp; typography</small></div>
+        <div class="agent" data-agent="Syllabus auditor"><i></i><b>Syllabus auditor</b><small>Scope &amp; consistency</small></div>
+        <div class="agent lead" data-agent="Verifier"><i></i><b>Chief verifier</b><small>Validates every finding</small></div>
+      </div>
+      <details class="logbox">
+        <summary>Activity log</summary>
+        <ol class="log" id="log"></ol>
+      </details>
+    </section>
+
+    <!-- Final -->
+    <section class="card" id="final" hidden>
+      <div id="verdict"></div>
+      <div class="stats" id="final-tiles"></div>
+      <div id="new-issues"></div>
+      <div class="final-actions">
+        <a class="button" id="dl-report-2" href="#" download>Updated error report</a>
+        <a class="button primary" id="dl-final" href="#" download>
+          <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download corrected module
+        </a>
+      </div>
+    </section>
+    <!-- Results -->
+    <section class="card" id="results" hidden>
+      <div class="card-head">
+        <div>
+          <h2>Error log</h2>
+          <p class="sub" id="results-sub"></p>
+        </div>
+        <a class="button" id="dl-report" href="#" download>
+          <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Error report PDF
+        </a>
+      </div>
+      <div class="alert" id="incomplete" hidden></div>
+
+      <div class="stats" id="tiles"></div>
+
+      <div class="toolbar">
+        <div class="seg" id="views">
+          <button data-view="topic" class="on">Topic</button>
+          <button data-view="chapter">Chapter</button>
+          <button data-view="page">Page</button>
+          <button data-view="question">Question</button>
+          <button data-view="rejected">Rejected</button>
+        </div>
+        <div class="filters">
+          <select id="f-sev" aria-label="Severity">
+            <option value="">All severities</option>
+            <option value="critical">Critical</option>
+            <option value="major">Major</option>
+            <option value="minor">Minor</option>
+          </select>
+          <select id="f-cat" aria-label="Category"><option value="">All categories</option></select>
+          <input id="f-q" type="search" placeholder="Search…" aria-label="Search" />
+        </div>
+      </div>
+
+      <div id="groups"></div>
+    </section>
+
+  </main>
+
+  <!-- Sticky implement bar -->
+  <div class="dock" id="dock" hidden>
+    <div class="dock-inner">
+      <div>
+        <strong id="accepted-count"></strong>
+        <span class="dock-links">
+          <button class="link" id="accept-all">Accept all</button>
+          <button class="link" id="accept-none">Accept none</button>
+        </span>
+        <p>Fixes are typeset into the original pages, keeping fonts, colours and layout, then checked by an independent second reviewer.</p>
+      </div>
+      <button id="implement" class="primary big">Implement all errors</button>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- ================= My modules ================= -->
+  <main id="view-modules" hidden>
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>My modules</h2>
+          <p class="sub" id="modules-sub"></p>
+        </div>
+        <a class="button primary" href="#new">+ New module</a>
+      </div>
+      <div class="quota" id="my-quota" hidden></div>
+      <div class="table-wrap"><table class="table" id="modules-table"></table></div>
+    </section>
+  </main>
+
+  <!-- ================= Admin ================= -->
+  <main id="view-admin" hidden>
+    <div class="admin-head">
+      <div>
+        <h1>Admin dashboard</h1>
+        <p class="sub" id="admin-sub"></p>
+      </div>
+      <div class="seg" id="admin-tabs">
+        <button data-tab="overview" class="on">Overview</button>
+        <button data-tab="users">Users</button>
+        <button data-tab="modules">All modules</button>
+      </div>
+    </div>
+    <div id="admin-overview"></div>
+    <div id="admin-users" hidden></div>
+    <div id="admin-modules" hidden></div>
+  </main>
+
+  <!-- ================= Dialogs ================= -->
+  <dialog id="dlg-user" class="form-dialog">
+    <form method="dialog" id="user-form">
+      <h2 id="user-form-title">Add user</h2>
+      <label class="field">Name<input name="name" autocomplete="off" /></label>
+      <label class="field">Email<input name="email" type="email" required autocomplete="off" /></label>
+      <div class="field-row">
+        <label class="field">Role
+          <select name="role"><option value="user">User</option><option value="admin">Admin</option></select>
+        </label>
+        <label class="field">Monthly page quota<input name="monthlyPageQuota" type="number" min="0" step="10" value="0" /><small>0 = unlimited</small></label>
+      </div>
+      <label class="field" id="user-pw-wrap">Temporary password<input name="password" type="text" minlength="8" autocomplete="off" /><small>They'll be asked to change it at first sign-in.</small></label>
+      <p class="form-error" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button class="primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-password" class="form-dialog">
+    <form method="dialog" id="password-form">
+      <h2 id="pw-title">Change password</h2>
+      <p class="sub" id="pw-sub"></p>
+      <label class="field" id="pw-current-wrap">Current password<input name="current" type="password" autocomplete="current-password" /></label>
+      <label class="field">New password<input name="next" type="password" minlength="8" required autocomplete="new-password" /><small>At least 8 characters.</small></label>
+      <p class="form-error" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="ghost" data-close id="pw-cancel">Cancel</button>
+        <button class="primary" type="submit">Update password</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-info" class="form-dialog">
+    <form method="dialog">
+      <h2 id="info-title"></h2>
+      <p class="sub" id="info-sub"></p>
+      <pre class="creds" id="info-creds"></pre>
+      <div class="dlg-actions">
+        <button type="button" class="ghost" id="info-copy">Copy</button>
+        <button class="primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-reset" class="form-dialog">
+    <form method="dialog" id="reset-form">
+      <h2 id="reset-title">Reset password</h2>
+      <p class="sub">They'll be signed out everywhere and asked to choose a new password at next sign-in.</p>
+      <label class="field">Temporary password<input name="password" type="text" minlength="8" required autocomplete="off" /></label>
+      <p class="form-error" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button class="primary" type="submit">Reset password</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="viewer">
+    <div class="viewer-head">
+      <strong id="viewer-title"></strong>
+      <div class="seg" id="viewer-tabs">
+        <button data-which="original" class="on">Original</button>
+        <button data-which="final">Corrected</button>
+      </div>
+      <button class="ghost" id="viewer-close">Close</button>
+    </div>
+    <div class="viewer-body"><div class="spinner" id="viewer-spin"></div><img id="viewer-img" alt="Page preview" /></div>
+  </dialog>
+
+  <template id="tpl-error">
+    <article class="err">
+      <header>
+        <label class="accept" title="Include in implementation"><input type="checkbox" /><span class="eid"></span></label>
+        <span class="pill sev"></span>
+        <span class="pill cat"></span>
+        <span class="loc"></span>
+        <span class="by"></span>
+        <span class="pill applied"></span>
+        <button class="link view">View page →</button>
+      </header>
+      <div class="diff">
+        <div class="side orig-side"><span class="lbl">Original</span><div class="orig"></div></div>
+        <div class="side corr-side"><span class="lbl">Correction <em>click to edit</em></span><div class="corr" contenteditable="true" spellcheck="false"></div></div>
+      </div>
+      <p class="why"></p>
+      <p class="note vnote"></p>
+      <p class="note rnote"></p>
+    </article>
+  </template>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
